@@ -101,7 +101,7 @@
         // Game objects
         const player = {
             x: canvas.width / 2,
-            y: canvas.height - 100, // Adjusted player position
+            y: canvas.height - 130, // Adjusted player position
             width: 40,
             height: 40,
             speed: 5,
@@ -385,6 +385,7 @@
                     createExplosion(player.x, player.y, 10, 2, 3);
                 }
                 if (playerExplosionTimer <= 0) {
+                    player.y = -100;
                     gameOver();
                 }
             }
