@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Shooter Game - Final Version</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Space Shooter Game - Mobile Friendly</title>
     <style>
         body {
             margin: 0;
@@ -14,6 +14,7 @@
         }
         #gameCanvas {
             display: block;
+            touch-action: none;
         }
         #gameOver, #gameWin {
             position: absolute;
@@ -31,6 +32,27 @@
             font-size: 18px;
             cursor: pointer;
         }
+        #mobileControls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+        .mobileButton {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #fff;
+            user-select: none;
+        }
     </style>
 </head>
 <body>
@@ -43,6 +65,11 @@
         Congratulations! You win!<br>
         <button id="restartButton2">Play Again</button>
     </div>
+    <div id="mobileControls" style="display: none;">
+        <div id="leftButton" class="mobileButton">←</div>
+        <div id="fireButton" class="mobileButton">🔥</div>
+        <div id="rightButton" class="mobileButton">→</div>
+    </div>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -50,9 +77,19 @@
         const gameWinDiv = document.getElementById('gameWin');
         const restartButton = document.getElementById('restartButton');
         const restartButton2 = document.getElementById('restartButton2');
+        const mobileControls = document.getElementById('mobileControls');
+        const leftButton = document.getElementById('leftButton');
+        const rightButton = document.getElementById('rightButton');
+        const fireButton = document.getElementById('fireButton');
+
+        let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+
+        if (isMobile) {
+            mobileControls.style.display = 'flex';
+        }
 
         let gameActive = true;
         let gamePhase = 1;
@@ -343,7 +380,6 @@
                 }
                 if (playerExplosionTimer <= 0) {
                     gameOver();
-		    player.x = -100;
                 }
             }
         }
@@ -415,7 +451,7 @@
                 if (
                     player.x - player.width / 2 < bullet.x + bullet.radius &&
                     player.x + player.width / 2 > bullet.x - bullet.radius &&
-player.y < bullet.y + bullet.radius &&
+                    player.y < bullet.y + bullet.radius &&
                     player.y + player.height > bullet.y - bullet.radius
                 ) {
                     bossBullets.splice(index, 1);
@@ -578,68 +614,89 @@ player.y < bullet.y + bullet.radius &&
             explosionParticles.length = 0;
         }
 
-        // Event listeners for player movement
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') player.dx = -player.speed;
-            if (e.key === 'ArrowRight') player.dx = player.speed;
-            if (e.key === ' ') {
-                if (currentWeapon === 'normal') {
-                    bullets.push({
-                        x: player.x - 2,
-                        y: player.y,
-                        width: 4,
-                        height: 10,
-                        speed: 7,
-                        color: '#ffffff',
-                        type: 'normal'
-                    });
-                } else if (currentWeapon === 'fastGun') {
-                    bullets.push({
-                        x: player.x - 2,
-                        y: player.y,
-                        width: 4,
-                        height: 10,
-                        speed: 10,
-                        color: '#ffff00',
-                        type: 'fast'
-                    });
-                } else if (currentWeapon === 'laserGun') {
-                    bullets.push({
-                        x: player.x - 3,
-                        y: 0,
-                        width: 6,
-                        height: canvas.height,
-                        speed: 0,
-                        color: 'rgba(255, 255, 0, 0.5)',
-                        type: 'laser',
-                        timeLeft: 60 // Laser lasts for 60 frames
-                    });
-                } else if (currentWeapon === 'option') {
-                    bullets.push({
-                        x: player.x - 30,
-                        y: player.y,
-                        width: 4,
-                        height: 10,
-                        speed: 7,
-                        color: '#ffffff',
-                        type: 'normal'
-                    });
-                    bullets.push({
-                        x: player.x + 30,
-                        y: player.y,
-                        width: 4,
-                        height: 10,
-                        speed: 7,
-                        color: '#ffffff',
-                        type: 'normal'
-                    });
-                }
+        function fireBullet() {
+            if (currentWeapon === 'normal') {
+                bullets.push({
+                    x: player.x - 2,
+                    y: player.y,
+                    width: 4,
+                    height: 10,
+                    speed: 7,
+                    color: '#ffffff',
+                    type: 'normal'
+                });
+            } else if (currentWeapon === 'fastGun') {
+                bullets.push({
+                    x: player.x - 2,
+                    y: player.y,
+                    width: 4,
+                    height: 10,
+                    speed: 10,
+                    color: '#ffff00',
+                    type: 'fast'
+                });
+            } else if (currentWeapon === 'laserGun') {
+                bullets.push({
+                    x: player.x - 3,
+                    y: 0,
+                    width: 6,
+                    height: canvas.height,
+                    speed: 0,
+                    color: 'rgba(255, 255, 0, 0.5)',
+                    type: 'laser',
+                    timeLeft: 60 // Laser lasts for 60 frames
+                });
+            } else if (currentWeapon === 'option') {
+                bullets.push({
+                    x: player.x - 30,
+                    y: player.y,
+                    width: 4,
+                    height: 10,
+                    speed: 7,
+                    color: '#ffffff',
+                    type: 'normal'
+                });
+                bullets.push({
+                    x: player.x + 30,
+                    y: player.y,
+                    width: 4,
+                    height: 10,
+                    speed: 7,
+                    color: '#ffffff',
+                    type: 'normal'
+                });
             }
-        });
+        }
 
-        document.addEventListener('keyup', (e) => {
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') player.dx = 0;
-        });
+        // Event listeners for player movement and shooting
+        if (isMobile) {
+            let leftPressed = false;
+            let rightPressed = false;
+
+            leftButton.addEventListener('touchstart', () => { leftPressed = true; });
+            leftButton.addEventListener('touchend', () => { leftPressed = false; });
+            rightButton.addEventListener('touchstart', () => { rightPressed = true; });
+            rightButton.addEventListener('touchend', () => { rightPressed = false; });
+            fireButton.addEventListener('touchstart', fireBullet);
+
+            function updatePlayerPosition() {
+                if (leftPressed) player.dx = -player.speed;
+                else if (rightPressed) player.dx = player.speed;
+                else player.dx = 0;
+                requestAnimationFrame(updatePlayerPosition);
+            }
+            updatePlayerPosition();
+        } else {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') player.dx = -player.speed;
+                if (e.key === 'ArrowRight') player.dx = player.speed;
+                if (e.key === ' ') fireBullet();
+            });
+
+            document.addEventListener('keyup', (e) => {
+                if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') player.dx = 0;
+            });
+        }
 
         // Resize canvas when window is resized
         window.addEventListener('resize', () => {
