@@ -1,4 +1,8 @@
 # SpaceShipGame
+
+Play the game here (hit F11 for better full screen experience):
+https://dliedke.github.io/SpaceShipGame/spaceship.html
+
 Spaceship HTML/CSS/JS game created with Claude AI:
 
 This is the complete and final version of the game, including increased difficulty and the player explosion effect. Here are the key features and changes:
