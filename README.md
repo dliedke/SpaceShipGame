@@ -1,4 +1,4 @@
-# SpaceShipGame
+# Spaceship Game 👾🎮🕹️
 
 Play the game here (hit F11 for better full screen experience):
 https://dliedke.github.io/SpaceShipGame/spaceship.html
