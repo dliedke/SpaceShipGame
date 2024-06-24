@@ -67,7 +67,6 @@
     </div>
     <div id="mobileControls" style="display: none;">
         <div id="leftButton" class="mobileButton">←</div>
-        <div id="fireButton" class="mobileButton">🔥</div>
         <div id="rightButton" class="mobileButton">→</div>
     </div>
     <script>
@@ -80,7 +79,6 @@
         const mobileControls = document.getElementById('mobileControls');
         const leftButton = document.getElementById('leftButton');
         const rightButton = document.getElementById('rightButton');
-        const fireButton = document.getElementById('fireButton');
 
         let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -103,7 +101,7 @@
         // Game objects
         const player = {
             x: canvas.width / 2,
-            y: canvas.height - 50,
+            y: canvas.height - 100, // Adjusted player position
             width: 40,
             height: 40,
             speed: 5,
@@ -284,6 +282,11 @@
                 // Update player
                 player.x += player.dx * timeScale;
                 player.x = Math.max(player.width / 2, Math.min(canvas.width - player.width / 2, player.x));
+
+                // Auto-shoot for mobile
+                if (isMobile && gameActive && !playerExploding && Math.random() < 0.2) {
+                    fireBullet();
+                }
             }
 
             // Update bullets
@@ -367,9 +370,12 @@
                 if (slowMotionTimer % 10 === 0) {
                     createExplosion(currentBoss.x, currentBoss.y, 20, 4, 3);
                 }
-                if (slowMotionTimer <= 0) {
+                if (slowMotionTimer <= 0 && gamePhase === 3) {
                     slowMotionActive = false;
                     gameWin();
+                }
+                if (slowMotionTimer <= 0 && gamePhase === 2) {
+                    slowMotionActive = false;
                 }
             }
 
@@ -407,8 +413,9 @@
                                 slowMotionActive = true;
                                 slowMotionTimer = slowMotionDuration;
                             } else {
+                                slowMotionActive = true;
+                                slowMotionTimer = slowMotionDuration;
                                 gamePhase = 2;
-                                currentBoss = null;
                             }
                         }
                     }
@@ -567,7 +574,7 @@
                 }
 
                 // Final boss spawn
-                if (score >= 1000 && gamePhase === 2 && !currentBoss) {
+                if (score >= 1000 && gamePhase === 2) {
                     currentBoss = bosses[1];
                     currentBoss.active = true;
                     currentBoss.health = currentBoss.maxHealth;
@@ -677,7 +684,6 @@
             leftButton.addEventListener('touchend', () => { leftPressed = false; });
             rightButton.addEventListener('touchstart', () => { rightPressed = true; });
             rightButton.addEventListener('touchend', () => { rightPressed = false; });
-            fireButton.addEventListener('touchstart', fireBullet);
 
             function updatePlayerPosition() {
                 if (leftPressed) player.dx = -player.speed;
@@ -702,7 +708,7 @@
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            player.y = canvas.height - 50;
+            player.y = canvas.height - 100; // Adjust player position on resize
         });
 
         // Restart game when button is clicked
