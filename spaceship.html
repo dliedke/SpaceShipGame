@@ -284,7 +284,7 @@
                 player.x = Math.max(player.width / 2, Math.min(canvas.width - player.width / 2, player.x));
 
                 // Auto-shoot for mobile
-                if (isMobile && gameActive && !playerExploding && Math.random() < 0.2) {
+                if (isMobile && gameActive && !playerExploding && Math.random() < 0.6) {
                     fireBullet();
                 }
             }
